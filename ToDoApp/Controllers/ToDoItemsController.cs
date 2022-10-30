@@ -18,12 +18,21 @@ namespace ToDoApp.Controllers
         // GET: ToDoItems
         public ActionResult Index()
         {
+            return View();
+        }
+
+        private IEnumerable<ToDoItem> UserToDoes()
+        {
             string currentUserID = User.Identity.GetUserId();
             ApplicationUser currentUser = db.Users.FirstOrDefault(x => x.Id == currentUserID);
 
-            return View(db.ToDoItems.ToList().Where(x => x.User == currentUser));
+            return db.ToDoItems.ToList().Where(x => x.User == currentUser);
         }
 
+        public ActionResult BuildToDoTable()
+        {
+            return PartialView("_ToDoTable", UserToDoes());
+        }
         // GET: ToDoItems/Details/5
         public ActionResult Details(int? id)
         {
@@ -63,6 +72,24 @@ namespace ToDoApp.Controllers
             }
 
             return View(toDoItem);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AJAXCreate([Bind(Include = "Id,Description,IsDone")] ToDoItem toDoItem)
+        {
+            if (ModelState.IsValid)
+            {
+                string currentUserId = User.Identity.GetUserId();
+                ApplicationUser currentUser = db.Users.FirstOrDefault(x => x.Id == currentUserId);
+                toDoItem.User = currentUser;
+                toDoItem.IsDone = false;
+                db.ToDoItems.Add(toDoItem);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return PartialView("_ToDoTable", UserToDoes());
         }
 
         // GET: ToDoItems/Edit/5
