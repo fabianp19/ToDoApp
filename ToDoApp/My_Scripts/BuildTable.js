@@ -1,9 +1,9 @@
 ﻿$(document).ready(function () {
 
     $.ajax({
-        url: '/ToDoItems/BuildToDoTable',
+        url: '/ToDoItemsController/BuildToDoTable',
         success: function (result) {
-            $('#tablediv').html(result);
+            $('#tableDiv').html(result);
         }
     });
 });

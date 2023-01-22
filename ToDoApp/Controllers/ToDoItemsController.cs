@@ -18,7 +18,7 @@ namespace ToDoApp.Controllers
         // GET: ToDoItems
         public ActionResult Index()
         {
-            return View();
+            return View(); //sprawdzić jak połączyć Index z _ToDoTable
         }
 
         private IEnumerable<ToDoItem> UserToDoes()
@@ -33,6 +33,7 @@ namespace ToDoApp.Controllers
         {
             return PartialView("_ToDoTable", UserToDoes());
         }
+
         // GET: ToDoItems/Details/5
         public ActionResult Details(int? id)
         {
@@ -76,7 +77,7 @@ namespace ToDoApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AJAXCreate([Bind(Include = "Id,Description,IsDone")] ToDoItem toDoItem)
+        public ActionResult AJAXCreate([Bind(Include = "Id,Description")] ToDoItem toDoItem)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +87,6 @@ namespace ToDoApp.Controllers
                 toDoItem.IsDone = false;
                 db.ToDoItems.Add(toDoItem);
                 db.SaveChanges();
-                return RedirectToAction("Index");
             }
 
             return PartialView("_ToDoTable", UserToDoes());
@@ -100,10 +100,20 @@ namespace ToDoApp.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             ToDoItem toDoItem = db.ToDoItems.Find(id);
+
             if (toDoItem == null)
             {
                 return HttpNotFound();
             }
+
+            string currentUserID = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.FirstOrDefault(x => x.Id == currentUserID);
+
+            if(toDoItem.User != currentUser)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             return View(toDoItem);
         }
 
@@ -123,6 +133,27 @@ namespace ToDoApp.Controllers
             return View(toDoItem);
         }
 
+        [HttpPost]
+        public ActionResult AJAXEdit(int? id, bool value)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ToDoItem toDoItem = db.ToDoItems.Find(id);
+            if (toDoItem == null)
+            {
+                return HttpNotFound();
+            }
+            else
+            {
+                toDoItem.IsDone = value;
+                db.Entry(toDoItem).State = EntityState.Modified;
+                db.SaveChanges();
+                return PartialView("_ToDoTable", UserToDoes());
+            }
+        }
+
         // GET: ToDoItems/Delete/5
         public ActionResult Delete(int? id)
         {
@@ -130,7 +161,9 @@ namespace ToDoApp.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             ToDoItem toDoItem = db.ToDoItems.Find(id);
+
             if (toDoItem == null)
             {
                 return HttpNotFound();

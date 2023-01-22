@@ -4,33 +4,29 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<div id="tableDiv"></div>
 
-<div id="tableDiv">
-
-</div>
-
-<div id="toDoCreateFrom">
-    @using (Ajax.BeginForm("AJAXCreate", "ToDo", new AjaxOptions
+<div id="toDoItemsCreateFrom">
+    @using (Ajax.BeginForm("AJAXCreate", "ToDoItems", new AjaxOptions
     {
         InsertionMode = InsertionMode.Replace,
         HttpMethod = "POST",
-        UpdateTargetId = "tabelDiv"
+        UpdateTargetId = "tableDiv"
     }))
     {
-    <div class="form-group">
-        @Html.AntiForgeryToken()
-        <div>
-            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.AntiForgeryToken()
+            <div>
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
     }
 </div>
 
 @section Scripts
-{
-    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/My_Scripts/BuildTable.js"></script>
     @Scripts.Render("~/bundles/jqueryval")
 }
