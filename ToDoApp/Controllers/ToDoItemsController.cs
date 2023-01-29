@@ -18,7 +18,7 @@ namespace ToDoApp.Controllers
         // GET: ToDoItems
         public ActionResult Index()
         {
-            return View(); //sprawdzić jak połączyć Index z _ToDoTable
+            return View();
         }
 
         private IEnumerable<ToDoItem> UserToDoes()
@@ -26,7 +26,20 @@ namespace ToDoApp.Controllers
             string currentUserID = User.Identity.GetUserId();
             ApplicationUser currentUser = db.Users.FirstOrDefault(x => x.Id == currentUserID);
 
-            return db.ToDoItems.ToList().Where(x => x.User == currentUser);
+            IEnumerable<ToDoItem> numbersOfToDoes = db.ToDoItems.ToList().Where(x => x.User == currentUser);
+
+            int completedToDo = 0;
+            foreach(var ToDo in numbersOfToDoes)
+            {
+                if(ToDo.IsDone)
+                {
+                    completedToDo++;
+                }
+            }
+
+            ViewBag.Percent = Math.Round(100f * ((float)completedToDo / (float)numbersOfToDoes.Count()));
+
+            return numbersOfToDoes;
         }
 
         public ActionResult BuildToDoTable()

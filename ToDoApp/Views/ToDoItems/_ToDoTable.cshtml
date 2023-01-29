@@ -1,5 +1,12 @@
 ﻿@model IEnumerable<ToDoApp.Models.ToDoItem>
 
+<div id="progessBarToDo">
+    <p>@(ViewBag.Percent)%</p>
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width:@(Html.AttributeEncode(ViewBag.Percent))%"></div>
+    </div>
+</div>
+
 <table class="table">
     <tr>
         <th>
@@ -15,7 +22,16 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                @if(!item.IsDone)
+                {
+                    @Html.DisplayFor(modelItem => item.Description)
+                }
+                else
+                {
+                <div class="completedToDo">
+                    @Html.DisplayFor(modelItem => item.Description)
+                </div>
+                }
             </td>
             <td>
                 @Html.CheckBoxFor(modelItem => item.IsDone, new {id = item.Id, @class = "ActiveCheck"})
