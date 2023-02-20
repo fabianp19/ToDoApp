@@ -22,19 +22,19 @@
     {
         <tr>
             <td>
-                @if(!item.IsDone)
+                @if (!item.IsDone)
                 {
                     @Html.DisplayFor(modelItem => item.Description)
                 }
                 else
                 {
-                <div class="completedToDo">
-                    @Html.DisplayFor(modelItem => item.Description)
-                </div>
+                    <div class="completedToDo">
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </div>
                 }
             </td>
             <td>
-                @Html.CheckBoxFor(modelItem => item.IsDone, new {id = item.Id, @class = "ActiveCheck"})
+                @Html.CheckBoxFor(modelItem => item.IsDone, new { id = item.Id, @class = "ActiveCheck" })
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |

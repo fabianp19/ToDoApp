@@ -54,11 +54,14 @@ namespace ToDoApp.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             ToDoItem toDoItem = db.ToDoItems.Find(id);
+
             if (toDoItem == null)
             {
                 return HttpNotFound();
             }
+
             return View(toDoItem);
         }
 
@@ -153,7 +156,9 @@ namespace ToDoApp.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             ToDoItem toDoItem = db.ToDoItems.Find(id);
+
             if (toDoItem == null)
             {
                 return HttpNotFound();

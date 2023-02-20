@@ -6,7 +6,7 @@
         var value = self.prop('checked');
 
         $.ajax({
-            url: '/ToDoItemsController/AJAXEdit',
+            url: '/ToDoItems/AJAXEdit',
             data:
             {
                 id: id,
